@@ -1,0 +1,25 @@
+name: defende_admin
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+# ✨ O FLUTTER ESTAVA SENTINDO FALTA DISSO AQUI:
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.1.1
+  firebase_auth: ^5.1.1
+  cloud_firestore: ^5.0.1
+  intl: ^0.20.2
+
+flutter:
+  uses-material-design: true
+
+  # Adicione estas duas linhas (atenção aos espaços!)
+  assets:
+    - assets/
