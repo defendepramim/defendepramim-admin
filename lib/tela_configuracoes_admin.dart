@@ -30,7 +30,8 @@ class _TelaConfiguracoesAdminState extends State<TelaConfiguracoesAdmin> {
   final TextEditingController _antecedenciaController = TextEditingController();
   final TextEditingController _pagamentoAutoController = TextEditingController();
   final TextEditingController _multaController = TextEditingController();
-  
+  final TextEditingController _tempoDeslocamentoController = TextEditingController();
+
   bool _modoManutencao = false;
   bool _carregando = true;
   bool _salvando = false;
@@ -68,6 +69,7 @@ class _TelaConfiguracoesAdminState extends State<TelaConfiguracoesAdmin> {
         _taxaAppVarzeaController.text = (d['taxaAppVarzea'] ?? 5.0).toString();
         _taxaAppInterController.text = (d['taxaAppInter'] ?? 6.0).toString();
         _taxaAppEliteController.text = (d['taxaAppElite'] ?? 8.0).toString();
+        _tempoDeslocamentoController.text = (d['tempoDeslocamentoMinutos'] ?? 30).toString();
 
         // Preços Totais
         _precoVarzeaController.text = (d['precoVarzea'] ?? 35.0).toString();
@@ -86,7 +88,7 @@ class _TelaConfiguracoesAdminState extends State<TelaConfiguracoesAdmin> {
         _taxaAppVarzeaController.text = "5.0"; _taxaAppInterController.text = "6.0"; _taxaAppEliteController.text = "8.0";
         _precoVarzeaController.text = "35.0"; _precoInterController.text = "36.0"; _precoEliteController.text = "38.0";
         _saqueMinimoController.text = "50.0"; _antecedenciaController.text = "2"; 
-        _pagamentoAutoController.text = "12"; _multaController.text = "4";
+        _pagamentoAutoController.text = "12"; _multaController.text = "4"; _tempoDeslocamentoController.text = "30";
       }
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Erro ao carregar: $e")));
@@ -114,6 +116,7 @@ class _TelaConfiguracoesAdminState extends State<TelaConfiguracoesAdmin> {
         'horasAntecedencia': int.tryParse(_antecedenciaController.text) ?? 2,
         'horasPagamentoAuto': int.tryParse(_pagamentoAutoController.text) ?? 12,
         'horasMultaCancelamento': int.tryParse(_multaController.text) ?? 4,
+        'tempoDeslocamentoMinutos': int.tryParse(_tempoDeslocamentoController.text) ?? 30,
         'emManutencao': _modoManutencao,
         'ultimaAtualizacao': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
@@ -187,17 +190,27 @@ class _TelaConfiguracoesAdminState extends State<TelaConfiguracoesAdmin> {
                 const SizedBox(height: 20),
 
                 // ⏱️ 3. CARD: RELÓGIO DE REGRAS DE TEMPO
-                _buildCardAgrupado("Relógio de Regras (Em Horas)", Icons.access_time_filled_rounded, [
-                  Row(
-                    children: [
-                      Expanded(child: _buildCampoTexto(_antecedenciaController, "Antecedência Criação (h)", "Ex: 2", Icons.add_circle_outline)),
-                      const SizedBox(width: 16),
-                      Expanded(child: _buildCampoTexto(_multaController, "Trava de Multa (h)", "Ex: 4", Icons.warning_amber_rounded)),
-                      const SizedBox(width: 16),
-                      Expanded(child: _buildCampoTexto(_pagamentoAutoController, "Pagto Automático (h)", "Ex: 12", Icons.monetization_on_outlined)),
-                    ],
-                  ),
-                ]),
+// ⏱️ 3. CARD: RELÓGIO DE REGRAS E LOGÍSTICA
+_buildCardAgrupado("Relógio de Regras e Logística", Icons.access_time_filled_rounded, [
+  Row(
+    children: [
+      Expanded(child: _buildCampoTexto(_antecedenciaController, "Antecedência Criação (h)", "Ex: 2", Icons.add_circle_outline)),
+      const SizedBox(width: 16),
+      Expanded(child: _buildCampoTexto(_multaController, "Trava de Multa (h)", "Ex: 4", Icons.warning_amber_rounded)),
+      const SizedBox(width: 16),
+      Expanded(child: _buildCampoTexto(_pagamentoAutoController, "Pagto Automático (h)", "Ex: 12", Icons.monetization_on_outlined)),
+    ],
+  ),
+  const SizedBox(height: 16), // Espaço entre as linhas
+  Row(
+    children: [
+      Expanded(
+        child: _buildCampoTexto(_tempoDeslocamentoController, "Tempo Deslocamento entre Jogos (Minutos)", "Ex: 30", Icons.route_rounded)
+      ),
+      const Spacer(flex: 2), // Joga o campo para a esquerda e não deixa ele ficar gigante
+    ],
+  ),
+]),
                 const SizedBox(height: 20),
 
                 // 🚨 4. MODO MANUTENÇÃO
